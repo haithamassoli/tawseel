@@ -40,6 +40,8 @@
     "e2e-test": "maestro test .maestro/ -e APP_ID=com.mobile-marketplace.development"
   },
   "dependencies": {
+    "@auth/core": "^0.37.0",
+    "@convex-dev/auth": "^0.0.94",
     "@expo-google-fonts/inter": "^0.4.2",
     "@expo/metro-runtime": "^56.0.15",
     "@gorhom/bottom-sheet": "^5.2.8",
