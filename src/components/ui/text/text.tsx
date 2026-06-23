@@ -1,10 +1,10 @@
 /* eslint-disable better-tailwindcss/no-unknown-classes */
 import type { TextProps, TextStyle } from 'react-native';
 import type { TxKeyPath } from '@/lib/i18n';
-import * as React from 'react';
-import { I18nManager, Text as NNText, StyleSheet } from 'react-native';
-
 import { twMerge } from 'cnfast';
+import * as React from 'react';
+
+import { I18nManager, Text as NNText, StyleSheet } from 'react-native';
 import { translate } from '@/lib/i18n';
 
 type Props = {

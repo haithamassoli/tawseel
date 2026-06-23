@@ -1,2 +1,2 @@
 export { LoginScreen } from './login-screen';
-export * from './use-auth-store';
+export { SignUpScreen } from './sign-up-screen';

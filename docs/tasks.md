@@ -17,24 +17,26 @@ Derived from `PRD.md`. Milestones are shippable vertical slices; tasks are the c
 
 ---
 
-## M1 — Foundation & app shell
+## M1 — Foundation & app shell ✅
 **Goal:** a user can sign up, log in, and navigate a localized RTL shell on device.
 
-- [ ] Init Convex; wire `ConvexProvider` + client in app root; set `EXPO_PUBLIC_CONVEX_URL`.
-- [ ] Write `convex/schema.ts`: `GOV` union + `users`, `trips`, `rideRequests`, `bookings`, `ratings` tables with all PRD indexes.
-- [ ] Set up Convex Auth Password provider keyed on phone; signup writes minimal `users` profile (`name`, `phone`, `ratingAvg=0`, `ratingCount=0`).
-- [ ] `getCurrentUser` helper resolving auth identity → `users` row for queries/mutations.
-- [ ] Signup screen (phone, password, name) — TanStack Form + Zod.
-- [ ] Login screen (phone, password) — TanStack Form + Zod.
-- [ ] Auth gate: unauthenticated → auth stack, authenticated → tabs; persist session.
-- [ ] Force RTL + Arabic default; `ar.json`/`en.json` with shared keys; localized governorate labels keyed off `GOV`.
-- [ ] Language toggle (ar/en) in profile.
-- [ ] Tab navigation skeleton (Find, Post, Request, Activity, Profile) with placeholder screens.
-- [ ] Profile screen: name, phone, optional vehicle fields, logout.
-- [ ] Request notification permission, obtain Expo push token, store on `users.pushToken`.
-- [ ] Send one test push to validate Expo/EAS credentials.
+- [x] Init Convex; wire `ConvexAuthProvider` + client in app root; set `EXPO_PUBLIC_CONVEX_URL`.
+- [x] Write `convex/schema.ts`: `GOV` union + `users`, `trips`, `rideRequests`, `bookings`, `ratings` tables with all PRD indexes.
+- [x] Set up Convex Auth Password provider keyed on phone; signup writes minimal `users` profile (`name`, `phone`, `ratingAvg=0`, `ratingCount=0`).
+- [x] `getCurrentUser` helper resolving auth identity → `users` row for queries/mutations.
+- [x] Signup screen (phone, password, name) — TanStack Form + Zod.
+- [x] Login screen (phone, password) — TanStack Form + Zod.
+- [x] Auth gate: unauthenticated → auth stack, authenticated → tabs; persist session.
+- [x] Force RTL + Arabic default; `ar.json`/`en.json` with shared keys; localized governorate labels keyed off `GOV`.
+- [x] Language toggle (ar/en) — in Settings tab (existing language-item).
+- [x] Tab navigation skeleton + Profile tab. *(Tabs are still the template's demo Feed/Style/Settings; the Find/Post/Request/Activity tabs land in M2–M4.)*
+- [x] Profile screen: name, phone, rating, optional vehicle fields, logout.
+- [x] Push permission + obtain Expo push token, store on `users.pushToken` (`<PushTokenSync/>`).
+- [ ] Send one test push to validate Expo/EAS credentials — *deferred: needs a physical device + dev build (see runtime notes).*
 
 **Exit:** sign up with phone+password on device, land in a fully RTL Arabic shell, push token persisted.
+
+> **Status:** Implemented & verified — `type-check`, `lint`, `lint:translations` green; Convex schema + phone Password auth deployed to the `tawseel` dev deployment. Native rebuild + on-device sign-in/push verification still pending (see runtime steps).
 
 ---
 

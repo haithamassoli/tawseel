@@ -1,6 +1,7 @@
 import type { ViewProps } from 'react-native';
-import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import { ConvexAuthProvider } from '@convex-dev/auth/react';
 
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { Stack, ThemeProvider } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import * as React from 'react';
@@ -9,9 +10,9 @@ import FlashMessage from 'react-native-flash-message';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { useThemeConfig } from '@/components/ui/use-theme-config';
-import { hydrateAuth } from '@/features/auth';
-
 import { APIProvider } from '@/lib/api';
+import { convex } from '@/lib/convex';
+import { secureStorage } from '@/lib/convex/secure-storage';
 import { loadSelectedTheme } from '@/lib/hooks';
 // Import  global CSS file
 import '../global.css';
@@ -23,7 +24,6 @@ export const unstable_settings = {
   initialRouteName: '(app)',
 };
 
-hydrateAuth();
 loadSelectedTheme();
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -50,6 +50,7 @@ export default function RootLayout() {
         <Stack.Screen name="(app)" options={{ headerShown: false }} />
         <Stack.Screen name="onboarding" options={{ headerShown: false }} />
         <Stack.Screen name="login" options={{ headerShown: false }} />
+        <Stack.Screen name="sign-up" options={{ headerShown: false }} />
       </Stack>
     </Providers>
   );
@@ -72,12 +73,14 @@ function Providers({
     >
       <KeyboardProvider>
         <ThemeProvider value={theme}>
-          <APIProvider>
-            <BottomSheetModalProvider>
-              {children}
-              <FlashMessage position="top" />
-            </BottomSheetModalProvider>
-          </APIProvider>
+          <ConvexAuthProvider client={convex} storage={secureStorage}>
+            <APIProvider>
+              <BottomSheetModalProvider>
+                {children}
+                <FlashMessage position="top" />
+              </BottomSheetModalProvider>
+            </APIProvider>
+          </ConvexAuthProvider>
         </ThemeProvider>
       </KeyboardProvider>
     </GestureHandlerRootView>

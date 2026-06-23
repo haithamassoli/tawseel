@@ -1,6 +1,7 @@
+import { useAuthActions } from '@convex-dev/auth/react';
 import Env from 'env';
-import { useUniwind } from 'uniwind';
 
+import { useUniwind } from 'uniwind';
 import {
   colors,
   FocusAwareStatusBar,
@@ -9,7 +10,6 @@ import {
   View,
 } from '@/components/ui';
 import { Github, Rate, Share, Support, Website } from '@/components/ui/icons';
-import { useAuthStore as useAuth } from '@/features/auth';
 import { translate } from '@/lib/i18n';
 import { LanguageItem } from './components/language-item';
 import { SettingsContainer } from './components/settings-container';
@@ -17,7 +17,7 @@ import { SettingsItem } from './components/settings-item';
 import { ThemeItem } from './components/theme-item';
 
 export function SettingsScreen() {
-  const signOut = useAuth.use.signOut();
+  const { signOut } = useAuthActions();
   const { theme } = useUniwind();
   const iconColor
     = theme === 'dark' ? colors.neutral[400] : colors.neutral[500];

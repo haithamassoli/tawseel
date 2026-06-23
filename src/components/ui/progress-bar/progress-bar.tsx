@@ -1,3 +1,4 @@
+import { twMerge } from 'cnfast';
 import * as React from 'react';
 import { useImperativeHandle } from 'react';
 import { View } from 'react-native';
@@ -7,7 +8,6 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import { twMerge } from 'cnfast';
 
 import colors from '@/components/ui/colors';
 

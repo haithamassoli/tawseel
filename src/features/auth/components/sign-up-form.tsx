@@ -13,6 +13,10 @@ import { translate } from '@/lib/i18n';
 const PHONE_REGEX = /^(\+?962|0)?7[789]\d{7}$/;
 
 const schema = z.object({
+  name: z
+    .string({ message: translate('auth.name_required') })
+    .min(1, translate('auth.name_required'))
+    .min(2, translate('auth.name_min')),
   phone: z
     .string({ message: translate('auth.phone_required') })
     .min(1, translate('auth.phone_required'))
@@ -23,19 +27,20 @@ const schema = z.object({
     .min(8, translate('auth.password_min')),
 });
 
-export type LoginFormType = z.infer<typeof schema>;
+export type SignUpFormType = z.infer<typeof schema>;
 
-export type LoginFormProps = {
-  onSubmit?: (data: LoginFormType) => void;
+export type SignUpFormProps = {
+  onSubmit?: (data: SignUpFormType) => void;
   loading?: boolean;
 };
 
-export function LoginForm({
+export function SignUpForm({
   onSubmit = () => {},
   loading = false,
-}: LoginFormProps) {
+}: SignUpFormProps) {
   const form = useForm({
     defaultValues: {
+      name: '',
       phone: '',
       password: '',
     },
@@ -58,13 +63,27 @@ export function LoginForm({
           <Text
             testID="form-title"
             className="pb-6 text-center text-4xl font-bold"
-            tx="auth.sign_in_title"
+            tx="auth.sign_up_title"
           />
           <Text
             className="mb-6 max-w-xs text-center text-gray-500"
-            tx="auth.sign_in_subtitle"
+            tx="auth.sign_up_subtitle"
           />
         </View>
+
+        <form.Field
+          name="name"
+          children={field => (
+            <Input
+              testID="name-input"
+              label={translate('auth.name')}
+              value={field.state.value}
+              onBlur={field.handleBlur}
+              onChangeText={field.handleChange}
+              error={getFieldError(field)}
+            />
+          )}
+        />
 
         <form.Field
           name="phone"
@@ -103,8 +122,8 @@ export function LoginForm({
           selector={state => [state.isSubmitting]}
           children={([isSubmitting]) => (
             <Button
-              testID="login-button"
-              label={translate('auth.sign_in_button')}
+              testID="signup-button"
+              label={translate('auth.sign_up_button')}
               onPress={form.handleSubmit}
               loading={isSubmitting || loading}
             />
@@ -112,11 +131,11 @@ export function LoginForm({
         />
 
         <View className="mt-4 flex-row items-center justify-center">
-          <Text className="text-gray-500" tx="auth.no_account" />
-          <Link href="/sign-up" asChild>
-            <Text testID="go-to-signup" className="font-semibold text-primary-600">
+          <Text className="text-gray-500" tx="auth.have_account" />
+          <Link href="/login" asChild>
+            <Text testID="go-to-login" className="font-semibold text-primary-600">
               {' '}
-              {translate('auth.sign_up_button')}
+              {translate('auth.sign_in_button')}
             </Text>
           </Link>
         </View>

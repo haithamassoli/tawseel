@@ -2,7 +2,8 @@ import type { LoginFormProps } from './login-form';
 
 import * as React from 'react';
 
-import { act, cleanup, screen, setup, waitFor } from '@/lib/test-utils';
+import { translate } from '@/lib/i18n';
+import { cleanup, screen, setup, waitFor } from '@/lib/test-utils';
 import { LoginForm } from './login-form';
 
 afterEach(cleanup);
@@ -19,39 +20,46 @@ describe('loginForm Form ', () => {
     const { user } = setup(<LoginForm />);
 
     const button = screen.getByTestId('login-button');
-    expect(screen.queryByText(/Email is required/i)).not.toBeOnTheScreen();
+    expect(
+      screen.queryByText(translate('auth.phone_required')),
+    ).not.toBeOnTheScreen();
     await user.press(button);
-    expect(await screen.findByText(/Email is required/i)).toBeOnTheScreen();
-    expect(screen.getByText(/Password is required/i)).toBeOnTheScreen();
+    expect(
+      await screen.findByText(translate('auth.phone_required')),
+    ).toBeOnTheScreen();
+    expect(
+      screen.getByText(translate('auth.password_required')),
+    ).toBeOnTheScreen();
   });
 
-  it('should display matching error when email is invalid', async () => {
+  it('should display matching error when phone is invalid', async () => {
     const { user } = setup(<LoginForm />);
 
     const button = screen.getByTestId('login-button');
-    const emailInput = screen.getByTestId('email-input');
+    const phoneInput = screen.getByTestId('phone-input');
     const passwordInput = screen.getByTestId('password-input');
 
-    await user.type(emailInput, 'yyyyy');
-    await act(async () => {
-      emailInput.props.onBlur(); // Manually trigger blur to set touched state
-    });
-    await user.type(passwordInput, 'test');
+    await user.type(phoneInput, '12345');
+    await user.type(passwordInput, 'password123');
     await user.press(button);
 
-    expect(await screen.findByText(/Invalid Email Format/i)).toBeOnTheScreen();
-    expect(screen.queryByText(/Email is required/i)).not.toBeOnTheScreen();
+    expect(
+      await screen.findByText(translate('auth.phone_invalid')),
+    ).toBeOnTheScreen();
+    expect(
+      screen.queryByText(translate('auth.phone_required')),
+    ).not.toBeOnTheScreen();
   });
 
   it('should call LoginForm with correct values when values are valid', async () => {
     const { user } = setup(<LoginForm onSubmit={onSubmitMock} />);
 
     const button = screen.getByTestId('login-button');
-    const emailInput = screen.getByTestId('email-input');
+    const phoneInput = screen.getByTestId('phone-input');
     const passwordInput = screen.getByTestId('password-input');
 
-    await user.type(emailInput, 'youssef@gmail.com');
-    await user.type(passwordInput, 'password');
+    await user.type(phoneInput, '0791234567');
+    await user.type(passwordInput, 'password123');
     await user.press(button);
     await waitFor(() => {
       expect(onSubmitMock).toHaveBeenCalledTimes(1);
@@ -59,8 +67,8 @@ describe('loginForm Form ', () => {
     // expect.objectContaining({}) because we don't want to test the target event we are receiving from the onSubmit function
     expect(onSubmitMock).toHaveBeenCalledWith(
       expect.objectContaining({
-        email: 'youssef@gmail.com',
-        password: 'password',
+        phone: '0791234567',
+        password: 'password123',
       }),
     );
   });

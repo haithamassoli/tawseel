@@ -1,4 +1,3 @@
-/* eslint-disable better-tailwindcss/no-unknown-classes */
 import type { BottomSheetModal } from '@gorhom/bottom-sheet';
 import type { PressableProps } from 'react-native';
 import type { SvgProps } from 'react-native-svg';
@@ -22,9 +21,9 @@ import { Text } from '../text';
 const selectTv = tv({
   slots: {
     container: 'mb-4',
-    label: 'text-neutral-700 mb-1 text-lg dark:text-neutral-100',
+    label: 'mb-1 text-lg text-neutral-700 dark:text-neutral-100',
     input:
-      'border-neutral-300 mt-0 flex-row items-center justify-center rounded-2xl border-[0.5px] p-3 dark:border-neutral-500 dark:bg-neutral-800',
+      'mt-0 flex-row items-center justify-center rounded-2xl border-[0.5px] border-neutral-300 p-3 dark:border-neutral-500 dark:bg-neutral-800',
     inputValue: 'dark:text-neutral-100',
   },
 

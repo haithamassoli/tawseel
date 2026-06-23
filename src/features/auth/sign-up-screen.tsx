@@ -1,30 +1,32 @@
-import type { LoginFormProps } from './components/login-form';
+import type { SignUpFormProps } from './components/sign-up-form';
 import { useAuthActions } from '@convex-dev/auth/react';
 import { useRouter } from 'expo-router';
 
 import * as React from 'react';
 import { FocusAwareStatusBar, showErrorMessage } from '@/components/ui';
 import { translate } from '@/lib/i18n';
-import { LoginForm } from './components/login-form';
+import { SignUpForm } from './components/sign-up-form';
 
-export function LoginScreen() {
+export function SignUpScreen() {
   const router = useRouter();
   const { signIn } = useAuthActions();
   const [loading, setLoading] = React.useState(false);
 
-  const onSubmit: LoginFormProps['onSubmit'] = async (data) => {
+  const onSubmit: SignUpFormProps['onSubmit'] = async (data) => {
     setLoading(true);
     try {
-      // Backend Password provider keys the account on `phone` (see blockers).
+      // Backend Password provider profile() must map params.phone -> account id
+      // and persist params.name to the users doc (see blockers).
       await signIn('password', {
         phone: data.phone,
         password: data.password,
-        flow: 'signIn',
+        name: data.name,
+        flow: 'signUp',
       });
       router.replace('/');
     }
     catch {
-      showErrorMessage(translate('auth.sign_in_error'));
+      showErrorMessage(translate('auth.sign_up_error'));
     }
     finally {
       setLoading(false);
@@ -34,7 +36,7 @@ export function LoginScreen() {
   return (
     <>
       <FocusAwareStatusBar />
-      <LoginForm onSubmit={onSubmit} loading={loading} />
+      <SignUpForm onSubmit={onSubmit} loading={loading} />
     </>
   );
 }
