@@ -1,14 +1,17 @@
 /* eslint-disable max-lines-per-function */
 import type { Id } from '../../../convex/_generated/dataModel';
-import { useQuery } from 'convex/react';
-import { Stack, useLocalSearchParams } from 'expo-router';
+import { useMutation, useQuery } from 'convex/react';
+import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 
 import * as React from 'react';
+import { showMessage } from 'react-native-flash-message';
 import {
   ActivityIndicator,
   Button,
   FocusAwareStatusBar,
+  Pressable,
   ScrollView,
+  showErrorMessage,
   Text,
   View,
 } from '@/components/ui';
@@ -17,18 +20,49 @@ import { translate, useSelectedLanguage } from '@/lib/i18n';
 import { api } from '../../../convex/_generated/api';
 
 /**
- * Read-only detail view for a single trip. Booking lives in M3 — here we only
- * surface a disabled "coming soon" placeholder.
+ * Detail view for a single trip with the booking control. Passengers can book
+ * (or request) seats; the driver sees a read-only notice for their own trip.
  */
 export function TripDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { language } = useSelectedLanguage();
   const locale = language === 'ar' ? 'ar-JO' : 'en-JO';
+  const router = useRouter();
+
+  const me = useQuery(api.users.getCurrentUser);
+  const bookTrip = useMutation(api.bookings.bookTrip);
+  const [seats, setSeats] = React.useState(1);
+  const [submitting, setSubmitting] = React.useState(false);
 
   const trip = useQuery(
     api.trips.getTrip,
     id ? { tripId: id as Id<'trips'> } : 'skip',
   );
+
+  const onBook = React.useCallback(async () => {
+    if (!trip) {
+      return;
+    }
+    setSubmitting(true);
+    try {
+      await bookTrip({ tripId: trip._id, seats });
+      showMessage({
+        message: translate(
+          trip.bookingMode === 'instant'
+            ? 'trips.book.success_confirmed'
+            : 'trips.book.success_pending',
+        ),
+        type: 'success',
+      });
+      router.push('/activity');
+    }
+    catch {
+      showErrorMessage(translate('trips.book.error'));
+    }
+    finally {
+      setSubmitting(false);
+    }
+  }, [trip, seats, bookTrip, router]);
 
   let content: React.ReactNode;
 
@@ -51,6 +85,10 @@ export function TripDetailScreen() {
     );
   }
   else {
+    const isOwn = !!me && me._id === trip.driverId;
+    const canBook
+      = !isOwn && trip.status === 'open' && trip.seatsAvailable > 0;
+
     const departDate = new Date(trip.departAt);
     const departText = `${departDate.toLocaleDateString(locale, {
       weekday: 'short',
@@ -158,11 +196,35 @@ export function TripDetailScreen() {
               : null}
           </View>
 
-          {/* M3 placeholder — booking not implemented yet. */}
-          <Button
-            label={translate('trips.detail.book_soon')}
-            disabled
-          />
+          {/* Booking control */}
+          {isOwn
+            ? (
+                <Text className="text-center text-gray-500">
+                  {translate('trips.book.own_trip')}
+                </Text>
+              )
+            : !canBook
+                ? (
+                    <Button label={translate('trips.book.full')} disabled />
+                  )
+                : (
+                    <View className="gap-3">
+                      <SeatStepper
+                        seats={Math.min(seats, trip.seatsAvailable)}
+                        max={trip.seatsAvailable}
+                        onChange={setSeats}
+                      />
+                      <Button
+                        label={translate(
+                          trip.bookingMode === 'instant'
+                            ? 'trips.book.book_now'
+                            : 'trips.book.request_book',
+                        )}
+                        loading={submitting}
+                        onPress={onBook}
+                      />
+                    </View>
+                  )}
         </View>
       </ScrollView>
     );
@@ -196,6 +258,43 @@ function Field({
       <Text className="text-xs text-gray-500">{label}</Text>
       <Text className="text-base">{value}</Text>
       {sub ? <Text className="text-sm text-gray-400">{sub}</Text> : null}
+    </View>
+  );
+}
+
+function SeatStepper({
+  seats,
+  max,
+  onChange,
+}: {
+  seats: number;
+  max: number;
+  onChange: (next: (s: number) => number) => void;
+}) {
+  return (
+    <View className="flex-row items-center justify-between">
+      <Text className="text-base">{translate('trips.book.seats')}</Text>
+      <View className="flex-row items-center gap-4">
+        <Pressable
+          testID="seat-minus"
+          disabled={seats <= 1}
+          onPress={() => onChange(s => Math.max(1, s - 1))}
+          className="size-9 items-center justify-center rounded-full border border-neutral-300 dark:border-neutral-700"
+        >
+          <Text className="text-xl">−</Text>
+        </Pressable>
+        <Text className="min-w-6 text-center text-lg font-semibold">
+          {seats}
+        </Text>
+        <Pressable
+          testID="seat-plus"
+          disabled={seats >= max}
+          onPress={() => onChange(s => Math.min(max, s + 1))}
+          className="size-9 items-center justify-center rounded-full border border-neutral-300 dark:border-neutral-700"
+        >
+          <Text className="text-xl">+</Text>
+        </Pressable>
+      </View>
     </View>
   );
 }

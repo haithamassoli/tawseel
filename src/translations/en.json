@@ -75,9 +75,41 @@
     "website": "Website"
   },
   "trips": {
+    "activity": {
+      "approve": "Approve",
+      "as_driver": "My trips",
+      "as_passenger": "My bookings",
+      "cancel": "Cancel",
+      "empty_driver": "You haven't posted any trips yet.",
+      "empty_passenger": "You haven't booked any rides yet.",
+      "no_bookings": "No bookings yet",
+      "passengers": "Passengers",
+      "phone": "Phone",
+      "phone_hidden": "Shown once confirmed",
+      "reject": "Reject",
+      "seats_booked": "{{seats}} seat(s)",
+      "title": "My activity"
+    },
+    "book": {
+      "book_now": "Book now",
+      "error": "Could not complete the booking. Please try again.",
+      "full": "Fully booked",
+      "own_trip": "This is your trip",
+      "request_book": "Request to book",
+      "seats": "Seats",
+      "success_confirmed": "Seat booked. The driver's number is in My activity.",
+      "success_pending": "Request sent. You'll be notified when the driver responds."
+    },
     "bookingMode": {
       "approve": "Approve requests",
       "instant": "Instant booking"
+    },
+    "booking_status": {
+      "cancelled": "Cancelled",
+      "completed": "Completed",
+      "confirmed": "Confirmed",
+      "pending": "Pending",
+      "rejected": "Rejected"
     },
     "card": {
       "driver_unknown": "Driver",
@@ -141,7 +173,14 @@
       "success": "Trip published successfully",
       "title": "Post a trip"
     },
+    "status": {
+      "cancelled": "Cancelled",
+      "completed": "Completed",
+      "full": "Full",
+      "open": "Open"
+    },
     "tabs": {
+      "activity": "Activity",
       "find": "Find",
       "post": "Post"
     },

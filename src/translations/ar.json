@@ -75,9 +75,41 @@
     "website": "موقع الكتروني"
   },
   "trips": {
+    "activity": {
+      "approve": "موافقة",
+      "as_driver": "رحلاتي",
+      "as_passenger": "حجوزاتي",
+      "cancel": "إلغاء",
+      "empty_driver": "لم تنشر أي رحلة بعد.",
+      "empty_passenger": "لم تحجز أي رحلة بعد.",
+      "no_bookings": "لا توجد حجوزات بعد",
+      "passengers": "الركاب",
+      "phone": "الهاتف",
+      "phone_hidden": "يظهر بعد التأكيد",
+      "reject": "رفض",
+      "seats_booked": "{{seats}} مقعد",
+      "title": "نشاطي"
+    },
+    "book": {
+      "book_now": "احجز الآن",
+      "error": "تعذّر إتمام الحجز. حاول مرة أخرى.",
+      "full": "مكتمل",
+      "own_trip": "هذه رحلتك",
+      "request_book": "طلب حجز",
+      "seats": "المقاعد",
+      "success_confirmed": "تم حجز المقعد. ستجد رقم السائق في نشاطي.",
+      "success_pending": "تم إرسال الطلب. سنعلمك عند رد السائق."
+    },
     "bookingMode": {
       "approve": "الموافقة على الطلبات",
       "instant": "حجز فوري"
+    },
+    "booking_status": {
+      "cancelled": "ملغاة",
+      "completed": "مكتملة",
+      "confirmed": "مؤكدة",
+      "pending": "قيد الانتظار",
+      "rejected": "مرفوضة"
     },
     "card": {
       "driver_unknown": "السائق",
@@ -141,7 +173,14 @@
       "success": "تم نشر الرحلة بنجاح",
       "title": "أضف رحلة"
     },
+    "status": {
+      "cancelled": "ملغاة",
+      "completed": "منتهية",
+      "full": "ممتلئة",
+      "open": "متاحة"
+    },
     "tabs": {
+      "activity": "نشاطي",
       "find": "البحث",
       "post": "نشر"
     },

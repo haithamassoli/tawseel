@@ -5,6 +5,7 @@ import * as React from 'react';
 import {
   Feed as FeedIcon,
   Home as HomeIcon,
+  Rate as RateIcon,
   Settings as SettingsIcon,
 } from '@/components/ui/icons';
 import { useIsFirstTime } from '@/lib/hooks';
@@ -48,6 +49,15 @@ export default function TabLayout() {
             headerShown: false,
             tabBarIcon: ({ color }) => <FeedIcon color={color} />,
             tabBarButtonTestID: 'post-trip-tab',
+          }}
+        />
+        <Tabs.Screen
+          name="activity"
+          options={{
+            title: translate('trips.tabs.activity'),
+            headerShown: false,
+            tabBarIcon: ({ color }) => <RateIcon color={color} />,
+            tabBarButtonTestID: 'activity-tab',
           }}
         />
         <Tabs.Screen

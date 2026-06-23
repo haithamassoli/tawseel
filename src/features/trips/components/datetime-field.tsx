@@ -1,5 +1,5 @@
-import type { DateTimePickerEvent } from '@react-native-community/datetimepicker';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import type { DateTimePickerChangeEvent } from '@expo/ui/community/datetime-picker';
+import DateTimePicker from '@expo/ui/community/datetime-picker';
 import i18n from 'i18next';
 import * as React from 'react';
 import { Platform, Pressable, View } from 'react-native';
@@ -55,14 +55,13 @@ export function DateTimeField({
     setShow(true);
   }, []);
 
-  const handleChange = React.useCallback(
-    (event: DateTimePickerEvent, selected?: Date) => {
-      // Dismissed without picking.
-      if (event.type === 'dismissed' || !selected) {
-        setShow(false);
-        setDraft(undefined);
-        return;
-      }
+  const handleDismiss = React.useCallback(() => {
+    setShow(false);
+    setDraft(undefined);
+  }, []);
+
+  const handleValueChange = React.useCallback(
+    (_event: DateTimePickerChangeEvent, selected: Date) => {
       if (Platform.OS === 'ios') {
         // iOS shows inline; commit immediately (mode handles date vs datetime).
         onChange(selected);
@@ -131,7 +130,8 @@ export function DateTimeField({
               mode={pickerMode}
               display={Platform.OS === 'ios' ? 'inline' : 'default'}
               minimumDate={minimumDate}
-              onChange={handleChange}
+              onValueChange={handleValueChange}
+              onDismiss={handleDismiss}
             />
           )
         : null}

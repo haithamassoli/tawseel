@@ -56,19 +56,21 @@ Derived from `PRD.md`. Milestones are shippable vertical slices; tasks are the c
 
 ---
 
-## M3 — Bookings (core loop)
+## M3 — Bookings (core loop) ✅
 **Goal:** the first complete marketplace loop.
 
-- [ ] `bookTrip` mutation: instant → `confirmed` (decrement seats, full check); approve → `pending` (no seat hold).
-- [ ] `approveBooking` mutation: re-check `seatsAvailable≥seats`, decrement, `full`/`open` transition.
-- [ ] `rejectBooking` mutation: no seat change.
-- [ ] `cancelBooking` mutation: release seats if was confirmed; `full`→`open`.
-- [ ] Book action on Trip detail with seat-count selector, respecting booking mode.
-- [ ] "My activity" — driver view: my trips + pending bookings with approve/reject.
-- [ ] "My activity" — passenger view: my bookings + status.
-- [ ] Phone reveal: counterpart phone exposed only when booking `confirmed` (query-side guard + UI).
+- [x] `bookTrip` mutation: instant → `confirmed` (decrement seats, full check); approve → `pending` (no seat hold). → `convex/bookings.ts`
+- [x] `approveBooking` mutation: re-check `seatsAvailable≥seats`, decrement, `full`/`open` transition. → `convex/bookings.ts`
+- [x] `rejectBooking` mutation: no seat change. → `convex/bookings.ts`
+- [x] `cancelBooking` mutation: release seats if was confirmed; `full`→`open` (guarded so completed/cancelled trips aren't resurrected). → `convex/bookings.ts`
+- [x] Book action on Trip detail with seat-count selector, respecting booking mode (own-trip + full guards). → `src/features/trips/trip-detail-screen.tsx`
+- [x] "My activity" — driver view: my trips + pending bookings with approve/reject. → `convex/bookings.ts` `myTripsWithBookings` + `src/features/trips/activity-screen.tsx` (Activity tab)
+- [x] "My activity" — passenger view: my bookings + status. → `convex/bookings.ts` `myBookingsAsPassenger` + same screen
+- [x] Phone reveal: counterpart phone exposed only when booking `confirmed` (query-side guard + UI). → `driverPhone`/`passengerPhone` returned `null` unless `confirmed`
 
 **Exit:** passenger books, driver approves, both see phone numbers, seat counts move correctly including the last-seat race.
+
+> **Status:** Implemented & verified — `type-check`, `lint` (0 errors), `lint:translations` green; **46/46 tests pass** (6 suites, incl. new `seat-math.test.ts`). Seat accounting extracted to a pure, unit-tested helper (`convex/lib/seats.ts`); the last-seat race relies on Convex per-document OCC re-reading `seatsAvailable` at approve time. Added a new **Activity** tab + localized `trips.status.*` and booking-status labels (ar/en). **Runtime pending:** run `npx convex dev` to deploy `convex/bookings.ts` to the `tawseel` deployment for on-device book→approve→phone-reveal verification (`npx convex codegen` already updated local types).
 
 ---
 
