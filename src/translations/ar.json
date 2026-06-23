@@ -73,5 +73,88 @@
     "title": "إعدادات",
     "version": "إصدار",
     "website": "موقع الكتروني"
+  },
+  "trips": {
+    "bookingMode": {
+      "approve": "الموافقة على الطلبات",
+      "instant": "حجز فوري"
+    },
+    "card": {
+      "driver_unknown": "السائق",
+      "no_ratings": "لا توجد تقييمات بعد",
+      "price": "{{price}} د.أ",
+      "seats": "{{available}}/{{total}} مقاعد"
+    },
+    "detail": {
+      "book_soon": "الحجز قريباً",
+      "booking_approve": "يتطلب موافقة",
+      "booking_instant": "فوري",
+      "booking_mode": "طريقة الحجز",
+      "depart": "موعد المغادرة",
+      "driver": "السائق",
+      "from": "من",
+      "not_found": "لم يتم العثور على الرحلة",
+      "note": "ملاحظة",
+      "price": "السعر لكل مقعد",
+      "price_value": "{{price}} دينار",
+      "rating": "التقييم",
+      "seats": "المقاعد",
+      "seats_value": "{{available}} من {{total}}",
+      "stops": "المحطات",
+      "title": "الرحلة",
+      "to": "إلى",
+      "vehicle": "المركبة"
+    },
+    "find": {
+      "date": "التاريخ (اختياري)",
+      "date_placeholder": "أي تاريخ",
+      "destination": "إلى",
+      "destination_placeholder": "اختر الوجهة",
+      "empty": "لا توجد رحلات على هذا المسار. جرّب تاريخاً آخر.",
+      "origin": "من",
+      "origin_placeholder": "اختر مكان الانطلاق",
+      "select_route": "اختر مكان الانطلاق والوجهة لعرض الرحلات المتاحة.",
+      "title": "ابحث عن رحلة"
+    },
+    "post": {
+      "booking_mode": "طريقة الحجز",
+      "depart_at": "وقت المغادرة",
+      "depart_placeholder": "اختر التاريخ والوقت",
+      "dest_area": "منطقة الوصول (اختياري)",
+      "dest_area_placeholder": "مثال: شارع الجامعة",
+      "destination": "إلى",
+      "destination_placeholder": "اختر الوجهة",
+      "note": "ملاحظة (اختياري)",
+      "note_placeholder": "أي معلومة يجب أن يعرفها الركاب",
+      "origin": "من",
+      "origin_area": "منطقة الانطلاق (اختياري)",
+      "origin_area_placeholder": "مثال: عبدون",
+      "origin_placeholder": "اختر مكان الانطلاق",
+      "price_per_seat": "السعر لكل مقعد (د.أ)",
+      "price_placeholder": "مثال: 5",
+      "seats_placeholder": "مثال: 3",
+      "seats_total": "عدد المقاعد",
+      "stops": "محطات التوقف (اختياري)",
+      "stops_placeholder": "افصل المحطات بفواصل",
+      "submit": "نشر الرحلة",
+      "submit_error": "تعذّر نشر رحلتك. حاول مرة أخرى.",
+      "success": "تم نشر الرحلة بنجاح",
+      "title": "أضف رحلة"
+    },
+    "tabs": {
+      "find": "البحث",
+      "post": "نشر"
+    },
+    "validation": {
+      "depart_future": "يجب أن يكون وقت المغادرة في المستقبل",
+      "depart_required": "يرجى اختيار وقت المغادرة",
+      "dest_required": "يرجى اختيار الوجهة",
+      "origin_required": "يرجى اختيار مكان الانطلاق",
+      "price_nonneg": "يجب أن يكون السعر 0 أو أكثر",
+      "price_required": "يرجى إدخال السعر",
+      "same_route": "يجب أن يختلف مكان الانطلاق عن الوجهة",
+      "seats_positive": "يجب أن يكون عدد المقاعد رقماً صحيحاً أكبر من 0",
+      "seats_required": "يرجى إدخال عدد المقاعد"
+    }
   }
 }

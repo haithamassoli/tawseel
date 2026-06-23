@@ -126,6 +126,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     '@react-native-vector-icons/feather',
     '@react-native-vector-icons/ionicons',
     '@react-native-vector-icons/material-design-icons',
+    '@react-native-community/datetimepicker',
   ],
   extra: {
     eas: {

@@ -73,5 +73,88 @@
     "title": "Settings",
     "version": "Version",
     "website": "Website"
+  },
+  "trips": {
+    "bookingMode": {
+      "approve": "Approve requests",
+      "instant": "Instant booking"
+    },
+    "card": {
+      "driver_unknown": "Driver",
+      "no_ratings": "No ratings yet",
+      "price": "{{price}} JOD",
+      "seats": "{{available}}/{{total}} seats"
+    },
+    "detail": {
+      "book_soon": "Booking coming soon",
+      "booking_approve": "Approval required",
+      "booking_instant": "Instant",
+      "booking_mode": "Booking",
+      "depart": "Departure",
+      "driver": "Driver",
+      "from": "From",
+      "not_found": "Trip not found",
+      "note": "Note",
+      "price": "Price per seat",
+      "price_value": "{{price}} JOD",
+      "rating": "Rating",
+      "seats": "Seats",
+      "seats_value": "{{available}} of {{total}}",
+      "stops": "Stops",
+      "title": "Trip",
+      "to": "To",
+      "vehicle": "Vehicle"
+    },
+    "find": {
+      "date": "Date (optional)",
+      "date_placeholder": "Any date",
+      "destination": "To",
+      "destination_placeholder": "Select destination",
+      "empty": "No rides found for this route. Try another date.",
+      "origin": "From",
+      "origin_placeholder": "Select origin",
+      "select_route": "Choose a starting point and destination to see available rides.",
+      "title": "Find a ride"
+    },
+    "post": {
+      "booking_mode": "Booking mode",
+      "depart_at": "Departure time",
+      "depart_placeholder": "Pick date and time",
+      "dest_area": "Drop-off area (optional)",
+      "dest_area_placeholder": "e.g. University Street",
+      "destination": "To",
+      "destination_placeholder": "Select destination",
+      "note": "Note (optional)",
+      "note_placeholder": "Anything passengers should know",
+      "origin": "From",
+      "origin_area": "Pickup area (optional)",
+      "origin_area_placeholder": "e.g. Abdoun",
+      "origin_placeholder": "Select origin",
+      "price_per_seat": "Price per seat (JOD)",
+      "price_placeholder": "e.g. 5",
+      "seats_placeholder": "e.g. 3",
+      "seats_total": "Available seats",
+      "stops": "Stops (optional)",
+      "stops_placeholder": "Separate stops with commas",
+      "submit": "Publish trip",
+      "submit_error": "Could not publish your trip. Please try again.",
+      "success": "Trip published successfully",
+      "title": "Post a trip"
+    },
+    "tabs": {
+      "find": "Find",
+      "post": "Post"
+    },
+    "validation": {
+      "depart_future": "Departure time must be in the future",
+      "depart_required": "Please choose a departure time",
+      "dest_required": "Please select a destination",
+      "origin_required": "Please select an origin",
+      "price_nonneg": "Price must be 0 or more",
+      "price_required": "Please enter a price",
+      "same_route": "Origin and destination must be different",
+      "seats_positive": "Seats must be a whole number greater than 0",
+      "seats_required": "Please enter the number of seats"
+    }
   }
 }

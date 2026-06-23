@@ -40,17 +40,19 @@ Derived from `PRD.md`. Milestones are shippable vertical slices; tasks are the c
 
 ---
 
-## M2 — Driver trips & browse
+## M2 — Driver trips & browse ✅
 **Goal:** supply exists and is discoverable.
 
-- [ ] `createTrip` mutation: validate (seats>0, price≥0, origin≠dest, depart in future); set `seatsAvailable=seatsTotal`, `status=open`.
-- [ ] Post-a-trip form: route pickers, datetime, seats, price, booking mode, optional area/stops/note.
-- [ ] `searchTrips` query by route + date via `by_route_status` (status=open), time window filtered in JS.
-- [ ] Find-a-ride screen: origin/dest governorate pickers + date → results list.
-- [ ] Trip card component (route, time, price, seats, driver name + rating).
-- [ ] `getTrip` query (with driver profile + vehicle) + Trip detail screen.
+- [x] `createTrip` mutation: validate (seats>0, price≥0, origin≠dest, depart in future); set `seatsAvailable=seatsTotal`, `status=open`. → `convex/trips.ts`
+- [x] Post-a-trip form: route pickers, datetime, seats, price, booking mode, optional area/stops/note. → `src/features/trips/post-trip-screen.tsx` + `(app)/post-trip.tsx` tab
+- [x] `searchTrips` query by route + date via `by_route_status` (status=open), time window filtered in JS.
+- [x] Find-a-ride screen: origin/dest governorate pickers + date → results list. → `src/features/trips/find-screen.tsx` (home/index tab)
+- [x] Trip card component (route, time, price, seats, driver name + rating). → `src/features/trips/components/trip-card.tsx`
+- [x] `getTrip` query (with driver profile + vehicle) + Trip detail screen. → `src/features/trips/trip-detail-screen.tsx` + `src/app/trip/[id].tsx`
 
 **Exit:** one user posts a trip; another finds it by route+date and opens its detail.
+
+> **Status:** Implemented & verified — `type-check`, `lint`, `lint:translations` green; 40/40 tests pass. Tabs restructured to **Find / Post / Settings / Profile**; demo template removed (`features/feed`, `app/feed`, `features/style-demo`, `(app)/style.tsx`, `lib/api` + React Query `APIProvider`). Added dep `@react-native-community/datetimepicker`. **Runtime pending:** run `npx convex dev` to deploy `convex/trips.ts` to the `tawseel` deployment, and rebuild the native app (datetimepicker is a native module) for on-device post→find→detail verification.
 
 ---
 

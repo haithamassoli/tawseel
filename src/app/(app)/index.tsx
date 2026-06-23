@@ -1,1 +1,1 @@
-export { FeedScreen as default } from '@/features/feed';
+export { FindScreen as default } from '@/features/trips';

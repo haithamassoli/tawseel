@@ -1,14 +1,14 @@
 import { useConvexAuth } from 'convex/react';
-import { Link, Redirect, Tabs } from 'expo-router';
+import { Redirect, Tabs } from 'expo-router';
 import * as React from 'react';
 
-import { Pressable, Text } from '@/components/ui';
 import {
   Feed as FeedIcon,
+  Home as HomeIcon,
   Settings as SettingsIcon,
-  Style as StyleIcon,
 } from '@/components/ui/icons';
 import { useIsFirstTime } from '@/lib/hooks';
+import { translate } from '@/lib/i18n';
 import { PushTokenSync } from '@/lib/notifications';
 
 export default function TabLayout() {
@@ -36,26 +36,24 @@ export default function TabLayout() {
         <Tabs.Screen
           name="index"
           options={{
-            title: 'Feed',
-            tabBarIcon: ({ color }) => <FeedIcon color={color} />,
-            headerRight: () => <CreateNewPostLink />,
-            tabBarButtonTestID: 'feed-tab',
+            title: translate('trips.tabs.find'),
+            tabBarIcon: ({ color }) => <HomeIcon color={color} />,
+            tabBarButtonTestID: 'find-tab',
           }}
         />
-
         <Tabs.Screen
-          name="style"
+          name="post-trip"
           options={{
-            title: 'Style',
+            title: translate('trips.tabs.post'),
             headerShown: false,
-            tabBarIcon: ({ color }) => <StyleIcon color={color} />,
-            tabBarButtonTestID: 'style-tab',
+            tabBarIcon: ({ color }) => <FeedIcon color={color} />,
+            tabBarButtonTestID: 'post-trip-tab',
           }}
         />
         <Tabs.Screen
           name="settings"
           options={{
-            title: 'Settings',
+            title: translate('settings.title'),
             headerShown: false,
             tabBarIcon: ({ color }) => <SettingsIcon color={color} />,
             tabBarButtonTestID: 'settings-tab',
@@ -64,7 +62,7 @@ export default function TabLayout() {
         <Tabs.Screen
           name="profile"
           options={{
-            title: 'Profile',
+            title: translate('profile.title'),
             headerShown: false,
             tabBarIcon: ({ color }) => <SettingsIcon color={color} />,
             tabBarButtonTestID: 'profile-tab',
@@ -72,15 +70,5 @@ export default function TabLayout() {
         />
       </Tabs>
     </>
-  );
-}
-
-function CreateNewPostLink() {
-  return (
-    <Link href="/feed/add-post" asChild>
-      <Pressable>
-        <Text className="px-3 text-primary-300">Create</Text>
-      </Pressable>
-    </Link>
   );
 }

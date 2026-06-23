@@ -10,7 +10,6 @@ import FlashMessage from 'react-native-flash-message';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { useThemeConfig } from '@/components/ui/use-theme-config';
-import { APIProvider } from '@/lib/api';
 import { convex } from '@/lib/convex';
 import { secureStorage } from '@/lib/convex/secure-storage';
 import { loadSelectedTheme } from '@/lib/hooks';
@@ -74,12 +73,10 @@ function Providers({
       <KeyboardProvider>
         <ThemeProvider value={theme}>
           <ConvexAuthProvider client={convex} storage={secureStorage}>
-            <APIProvider>
-              <BottomSheetModalProvider>
-                {children}
-                <FlashMessage position="top" />
-              </BottomSheetModalProvider>
-            </APIProvider>
+            <BottomSheetModalProvider>
+              {children}
+              <FlashMessage position="top" />
+            </BottomSheetModalProvider>
           </ConvexAuthProvider>
         </ThemeProvider>
       </KeyboardProvider>
