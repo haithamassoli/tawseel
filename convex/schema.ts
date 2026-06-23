@@ -125,4 +125,19 @@ export default defineSchema({
   })
     .index('by_ratee', ['rateeId'])
     .index('by_booking', ['bookingId']),
+
+  notifications: defineTable({
+    userId: v.id('users'),
+    type: v.union(
+      v.literal('match_passenger'),
+      v.literal('match_driver'),
+      v.literal('booking_pending'),
+      v.literal('booking_confirmed'),
+      v.literal('booking_rejected'),
+    ),
+    tripId: v.optional(v.id('trips')),
+    requestId: v.optional(v.id('rideRequests')),
+    bookingId: v.optional(v.id('bookings')),
+    read: v.boolean(),
+  }).index('by_user', ['userId']),
 });

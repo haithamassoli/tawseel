@@ -1,9 +1,13 @@
 import type { Doc, Id } from './_generated/dataModel';
 import type { QueryCtx } from './_generated/server';
+import type { PushMessage } from './notifications';
 
 import { getAuthUserId } from '@convex-dev/auth/server';
 import { v } from 'convex/values';
+import { internal } from './_generated/api';
 import { mutation, query } from './_generated/server';
+import { tripMatchesRequest } from './lib/matching';
+import { recordNotification } from './notifications';
 
 // 12 Jordanian governorates. Re-declared here to keep this file self-contained
 // and mirror exactly the GOV validator in convex/schema.ts (the schema declares
@@ -85,7 +89,7 @@ export const createTrip = mutation({
       throw new Error('departAt must be in the future');
     }
 
-    return await ctx.db.insert('trips', {
+    const tripId = await ctx.db.insert('trips', {
       driverId: userId,
       originGov: args.originGov,
       destGov: args.destGov,
@@ -100,6 +104,45 @@ export const createTrip = mutation({
       status: 'open',
       note: args.note,
     });
+
+    // Symmetric match: notify passengers whose open requests on this exact route
+    // match (±90 min, enough seats) that a matching driver just appeared.
+    // ponytail: .collect() is bounded per governorate-pair for MVP (mirrors searchTrips).
+    const requests = await ctx.db
+      .query('rideRequests')
+      .withIndex('by_route_status', q =>
+        q
+          .eq('originGov', args.originGov)
+          .eq('destGov', args.destGov)
+          .eq('status', 'open'))
+      .collect();
+
+    const matched = requests.filter(r =>
+      tripMatchesRequest(
+        { departAt: args.departAt, seatsAvailable: args.seatsTotal },
+        { desiredAt: r.desiredAt, seats: r.seats },
+      ),
+    );
+
+    const messages: PushMessage[] = [];
+    for (const r of matched) {
+      const m = await recordNotification(ctx, {
+        userId: r.passengerId,
+        type: 'match_driver',
+        tripId,
+        requestId: r._id,
+      });
+      if (m) {
+        messages.push(m);
+      }
+    }
+    if (messages.length) {
+      await ctx.scheduler.runAfter(0, internal.notifications.sendPush, {
+        messages,
+      });
+    }
+
+    return tripId;
   },
 });
 

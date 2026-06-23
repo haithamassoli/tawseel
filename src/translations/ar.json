@@ -75,6 +75,14 @@
     "website": "موقع الكتروني"
   },
   "trips": {
+    "accept": {
+      "confirm": "اقبل وأنشئ الرحلة",
+      "depart": "أكّد وقت المغادرة",
+      "error": "تعذّر قبول الطلب. حاول مرة أخرى.",
+      "passenger": "الراكب",
+      "success": "تم قبول الطلب. تم تأكيد الراكب.",
+      "title": "قبول الطلب"
+    },
     "activity": {
       "approve": "موافقة",
       "as_driver": "رحلاتي",
@@ -148,6 +156,25 @@
       "select_route": "اختر مكان الانطلاق والوجهة لعرض الرحلات المتاحة.",
       "title": "ابحث عن رحلة"
     },
+    "myRequests": {
+      "empty": "لم تنشر أي طلب بعد.",
+      "title": "طلباتي"
+    },
+    "notifications": {
+      "empty": "لا توجد إشعارات بعد.",
+      "title": "الإشعارات",
+      "type_booking_confirmed": "تم تأكيد حجزك",
+      "type_booking_pending": "طلب حجز جديد",
+      "type_booking_rejected": "تم رفض حجزك",
+      "type_match_driver": "سائق محتمل لرحلتك",
+      "type_match_passenger": "راكب محتمل على مسارك"
+    },
+    "openRequests": {
+      "empty": "لا توجد طلبات مفتوحة على هذا المسار.",
+      "link": "تصفح طلبات الركاب",
+      "select_route": "اختر مساراً لعرض طلبات الركاب.",
+      "title": "طلبات الركاب"
+    },
     "post": {
       "booking_mode": "طريقة الحجز",
       "depart_at": "وقت المغادرة",
@@ -173,6 +200,25 @@
       "success": "تم نشر الرحلة بنجاح",
       "title": "أضف رحلة"
     },
+    "request": {
+      "desired_at": "الوقت المفضل",
+      "desired_placeholder": "اختر التاريخ والوقت",
+      "link": "تحتاج رحلة؟ اطلبها",
+      "matches_title": "رحلات متطابقة",
+      "no_matches": "لا توجد رحلات متطابقة بعد. سننبهك عند توفر سائق.",
+      "seats": "عدد المقاعد المطلوبة",
+      "submit": "ابحث عن تطابق",
+      "submit_error": "تعذّر نشر طلبك. حاول مرة أخرى.",
+      "subtitle": "أخبر السائقين إلى أين تريد الذهاب.",
+      "success": "تم نشر الطلب.",
+      "title": "اطلب رحلة"
+    },
+    "request_status": {
+      "cancelled": "ملغى",
+      "completed": "منتهي",
+      "matched": "تم التطابق",
+      "open": "مفتوح"
+    },
     "status": {
       "cancelled": "ملغاة",
       "completed": "منتهية",
@@ -182,6 +228,7 @@
     "tabs": {
       "activity": "نشاطي",
       "find": "البحث",
+      "notifications": "الإشعارات",
       "post": "نشر"
     },
     "validation": {

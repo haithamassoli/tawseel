@@ -3,6 +3,7 @@ import { Redirect, Tabs } from 'expo-router';
 import * as React from 'react';
 
 import {
+  Bell as BellIcon,
   Feed as FeedIcon,
   Home as HomeIcon,
   Rate as RateIcon,
@@ -58,6 +59,15 @@ export default function TabLayout() {
             headerShown: false,
             tabBarIcon: ({ color }) => <RateIcon color={color} />,
             tabBarButtonTestID: 'activity-tab',
+          }}
+        />
+        <Tabs.Screen
+          name="notifications"
+          options={{
+            title: translate('trips.tabs.notifications'),
+            headerShown: false,
+            tabBarIcon: ({ color }) => <BellIcon color={color} />,
+            tabBarButtonTestID: 'notifications-tab',
           }}
         />
         <Tabs.Screen

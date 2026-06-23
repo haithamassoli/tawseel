@@ -3,8 +3,10 @@ import type { MutationCtx } from './_generated/server';
 
 import { getAuthUserId } from '@convex-dev/auth/server';
 import { v } from 'convex/values';
+import { internal } from './_generated/api';
 import { mutation, query } from './_generated/server';
 import { releaseSeats, reserveSeats } from './lib/seats';
+import { recordNotification } from './notifications';
 
 async function requireUser(ctx: MutationCtx): Promise<Id<'users'>> {
   const userId = await getAuthUserId(ctx);
@@ -51,12 +53,24 @@ export const bookTrip = mutation({
     // approve mode: pending, no seat hold.
     // ponytail: a passenger can create multiple pending bookings on one trip;
     // dedupe only if it becomes a problem.
-    return await ctx.db.insert('bookings', {
+    const bookingId = await ctx.db.insert('bookings', {
       tripId: trip._id,
       passengerId,
       seats: args.seats,
       status: 'pending',
     });
+    const m = await recordNotification(ctx, {
+      userId: trip.driverId,
+      type: 'booking_pending',
+      tripId: trip._id,
+      bookingId,
+    });
+    if (m) {
+      await ctx.scheduler.runAfter(0, internal.notifications.sendPush, {
+        messages: [m],
+      });
+    }
+    return bookingId;
   },
 });
 
@@ -88,6 +102,17 @@ export const approveBooking = mutation({
     const next = reserveSeats(trip.seatsAvailable, booking.seats);
     await ctx.db.patch(trip._id, next);
     await ctx.db.patch(booking._id, { status: 'confirmed' });
+    const m = await recordNotification(ctx, {
+      userId: booking.passengerId,
+      type: 'booking_confirmed',
+      tripId: trip._id,
+      bookingId: booking._id,
+    });
+    if (m) {
+      await ctx.scheduler.runAfter(0, internal.notifications.sendPush, {
+        messages: [m],
+      });
+    }
     return null;
   },
 });
@@ -112,6 +137,17 @@ export const rejectBooking = mutation({
       throw new Error('Only pending bookings can be rejected');
     }
     await ctx.db.patch(booking._id, { status: 'rejected' });
+    const m = await recordNotification(ctx, {
+      userId: booking.passengerId,
+      type: 'booking_rejected',
+      tripId: trip._id,
+      bookingId: booking._id,
+    });
+    if (m) {
+      await ctx.scheduler.runAfter(0, internal.notifications.sendPush, {
+        messages: [m],
+      });
+    }
     return null;
   },
 });

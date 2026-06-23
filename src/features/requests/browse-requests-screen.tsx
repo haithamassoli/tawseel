@@ -1,13 +1,12 @@
 import type { FunctionReturnType } from 'convex/server';
 import { FlashList } from '@shopify/flash-list';
 import { useQuery } from 'convex/react';
-import { useRouter } from 'expo-router';
+import { Stack } from 'expo-router';
 import * as React from 'react';
-import { ActivityIndicator } from 'react-native';
 
 import {
+  ActivityIndicator,
   FocusAwareStatusBar,
-  Pressable,
   Select,
   Text,
   View,
@@ -15,10 +14,12 @@ import {
 import { getGovernorateOptions } from '@/lib/constants/governorates';
 import { translate } from '@/lib/i18n';
 import { api } from '../../../convex/_generated/api';
-import { DateTimeField } from './components/datetime-field';
-import { TripCard } from './components/trip-card';
+import { DateTimeField } from '../trips/components/datetime-field';
+import { RequestCard } from './components/request-card';
 
-type TripItem = FunctionReturnType<typeof api.trips.searchTrips>[number];
+type RequestItem = FunctionReturnType<
+  typeof api.requests.searchRideRequests
+>[number];
 
 function startOfDayMs(date: Date): number {
   const d = new Date(date);
@@ -26,47 +27,39 @@ function startOfDayMs(date: Date): number {
   return d.getTime();
 }
 
-export function FindScreen() {
-  const router = useRouter();
+export function BrowseRequestsScreen() {
   const options = React.useMemo(() => getGovernorateOptions(), []);
   const [originGov, setOriginGov] = React.useState<string | undefined>(undefined);
   const [destGov, setDestGov] = React.useState<string | undefined>(undefined);
   const [date, setDate] = React.useState<Date | undefined>(undefined);
 
   const ready = !!originGov && !!destGov;
-  const trips = useQuery(
-    api.trips.searchTrips,
+  const requests = useQuery(
+    api.requests.searchRideRequests,
     ready
       ? {
-          originGov: originGov as TripItem['originGov'],
-          destGov: destGov as TripItem['destGov'],
+          originGov: originGov as RequestItem['originGov'],
+          destGov: destGov as RequestItem['destGov'],
           ...(date ? { date: startOfDayMs(date) } : {}),
         }
       : 'skip',
   );
 
   const renderItem = React.useCallback(
-    ({ item }: { item: TripItem }) => <TripCard {...item} />,
+    ({ item }: { item: RequestItem }) => <RequestCard {...item} />,
     [],
   );
 
-  const isLoading = ready && trips === undefined;
-  const isEmpty = ready && Array.isArray(trips) && trips.length === 0;
+  const isLoading = ready && requests === undefined;
+  const isEmpty = ready && Array.isArray(requests) && requests.length === 0;
 
   return (
     <View className="flex-1">
+      <Stack.Screen options={{ title: translate('trips.openRequests.title') }} />
       <FocusAwareStatusBar />
       <View className="p-4">
-        <Text className="text-2xl font-bold" tx="trips.find.title" />
-        <Pressable
-          testID="request-ride-link"
-          className="mb-4"
-          onPress={() => router.push('/request-ride')}
-        >
-          <Text className="text-primary-600" tx="trips.request.link" />
-        </Pressable>
         <Select
-          testID="find-origin"
+          testID="open-requests-origin"
           label={translate('trips.find.origin')}
           placeholder={translate('trips.find.origin_placeholder')}
           value={originGov}
@@ -74,7 +67,7 @@ export function FindScreen() {
           onSelect={v => setOriginGov(String(v))}
         />
         <Select
-          testID="find-dest"
+          testID="open-requests-dest"
           label={translate('trips.find.destination')}
           placeholder={translate('trips.find.destination_placeholder')}
           value={destGov}
@@ -82,7 +75,7 @@ export function FindScreen() {
           onSelect={v => setDestGov(String(v))}
         />
         <DateTimeField
-          testID="find-date"
+          testID="open-requests-date"
           label={translate('trips.find.date')}
           placeholder={translate('trips.find.date_placeholder')}
           mode="date"
@@ -97,7 +90,7 @@ export function FindScreen() {
             <View className="flex-1 items-center justify-center p-8">
               <Text
                 className="text-center text-gray-500"
-                tx="trips.find.select_route"
+                tx="trips.openRequests.select_route"
               />
             </View>
           )
@@ -112,15 +105,15 @@ export function FindScreen() {
                 <View className="flex-1 items-center justify-center p-8">
                   <Text
                     className="text-center text-gray-500"
-                    tx="trips.find.empty"
+                    tx="trips.openRequests.empty"
                   />
                 </View>
               )
             : (
                 <FlashList
-                  data={trips ?? []}
+                  data={requests ?? []}
                   renderItem={renderItem}
-                  keyExtractor={item => `trip-${item._id}`}
+                  keyExtractor={item => `request-${item._id}`}
                 />
               )}
     </View>

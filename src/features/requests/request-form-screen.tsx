@@ -1,7 +1,8 @@
 /* eslint-disable max-lines-per-function */
+import type { FunctionReturnType } from 'convex/server';
 import { useForm } from '@tanstack/react-form';
 import { useMutation } from 'convex/react';
-import { useRouter } from 'expo-router';
+import { Stack } from 'expo-router';
 import * as React from 'react';
 import { showMessage } from 'react-native-flash-message';
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
@@ -10,7 +11,6 @@ import * as z from 'zod';
 import {
   Button,
   Input,
-  Pressable,
   ScrollView,
   Select,
   showErrorMessage,
@@ -21,35 +21,27 @@ import { getFieldError } from '@/components/ui/form-utils';
 import { getGovernorateOptions } from '@/lib/constants/governorates';
 import { translate } from '@/lib/i18n';
 import { api } from '../../../convex/_generated/api';
-import { DateTimeField } from './components/datetime-field';
+import { DateTimeField } from '../trips/components/datetime-field';
+import { TripCard } from '../trips/components/trip-card';
 
 const schema = z
   .object({
     originGov: z.string().min(1, translate('trips.validation.origin_required')),
     destGov: z.string().min(1, translate('trips.validation.dest_required')),
-    departAt: z
+    desiredAt: z
       .date({ message: translate('trips.validation.depart_required') })
       .refine(d => d.getTime() > Date.now(), {
         message: translate('trips.validation.depart_future'),
       }),
-    originArea: z.string().max(120).optional().or(z.literal('')),
-    destArea: z.string().max(120).optional().or(z.literal('')),
-    stops: z.string().max(300).optional().or(z.literal('')),
-    seatsTotal: z
+    seats: z
       .string()
       .min(1, translate('trips.validation.seats_required'))
       .refine((s) => {
         const n = Number(s);
         return Number.isInteger(n) && n > 0;
       }, { message: translate('trips.validation.seats_positive') }),
-    pricePerSeat: z
-      .string()
-      .min(1, translate('trips.validation.price_required'))
-      .refine((s) => {
-        const n = Number(s);
-        return Number.isFinite(n) && n >= 0;
-      }, { message: translate('trips.validation.price_nonneg') }),
-    bookingMode: z.enum(['instant', 'approve']),
+    originArea: z.string().max(120).optional().or(z.literal('')),
+    destArea: z.string().max(120).optional().or(z.literal('')),
     note: z.string().max(500).optional().or(z.literal('')),
   })
   .refine(v => v.originGov !== v.destGov, {
@@ -57,95 +49,75 @@ const schema = z
     path: ['destGov'],
   });
 
-type PostTripValues = {
+type RequestValues = {
   originGov: string;
   destGov: string;
-  departAt: Date | undefined;
+  desiredAt: Date | undefined;
+  seats: string;
   originArea: string;
   destArea: string;
-  stops: string;
-  seatsTotal: string;
-  pricePerSeat: string;
-  bookingMode: 'instant' | 'approve';
   note: string;
 };
 
-export function PostTripScreen() {
-  const router = useRouter();
-  const createTrip = useMutation(api.trips.createTrip);
+type Matches = FunctionReturnType<typeof api.requests.createRideRequest>;
+
+export function RequestFormScreen() {
+  const createRideRequest = useMutation(api.requests.createRideRequest);
   const govOptions = React.useMemo(() => getGovernorateOptions(), []);
-  const bookingOptions = React.useMemo(
-    () => [
-      { label: translate('trips.bookingMode.instant'), value: 'instant' },
-      { label: translate('trips.bookingMode.approve'), value: 'approve' },
-    ],
-    [],
-  );
+  const [matches, setMatches] = React.useState<Matches | null>(null);
 
   const form = useForm({
     defaultValues: {
       originGov: '',
       destGov: '',
-      departAt: undefined,
+      desiredAt: undefined,
+      seats: '',
       originArea: '',
       destArea: '',
-      stops: '',
-      seatsTotal: '',
-      pricePerSeat: '',
-      bookingMode: 'instant',
       note: '',
-    } as PostTripValues,
+    } as RequestValues,
     validators: {
       onChange: schema as any,
     },
     onSubmit: async ({ value }) => {
       try {
-        const stops = value.stops
-          .split(',')
-          .map(s => s.trim())
-          .filter(Boolean);
-        await createTrip({
+        const result = await createRideRequest({
           originGov: value.originGov as any,
           destGov: value.destGov as any,
-          departAt: (value.departAt as Date).getTime(),
+          desiredAt: (value.desiredAt as Date).getTime(),
+          seats: Number(value.seats),
           originArea: value.originArea.trim() || undefined,
           destArea: value.destArea.trim() || undefined,
-          stops: stops.length ? stops : undefined,
-          seatsTotal: Number(value.seatsTotal),
-          pricePerSeat: Number(value.pricePerSeat),
-          bookingMode: value.bookingMode,
           note: value.note.trim() || undefined,
         });
+        setMatches(result);
         showMessage({
-          message: translate('trips.post.success'),
+          message: translate('trips.request.success'),
           type: 'success',
         });
-        router.replace('/');
       }
       catch {
-        showErrorMessage(translate('trips.post.submit_error'));
+        showErrorMessage(translate('trips.request.submit_error'));
       }
     },
   });
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
+      <Stack.Screen options={{ title: translate('trips.request.title') }} />
       <ScrollView className="flex-1" keyboardShouldPersistTaps="handled">
         <View className="p-4">
-          <Text className="text-2xl font-bold" tx="trips.post.title" />
-          <Pressable
-            testID="browse-requests-link"
-            className="mb-4"
-            onPress={() => router.push('/open-requests')}
-          >
-            <Text className="text-primary-600" tx="trips.openRequests.link" />
-          </Pressable>
+          <Text className="text-2xl font-bold" tx="trips.request.title" />
+          <Text
+            className="mb-4 text-gray-600 dark:text-neutral-400"
+            tx="trips.request.subtitle"
+          />
 
           <form.Field
             name="originGov"
             children={field => (
               <Select
-                testID="post-origin"
+                testID="request-origin"
                 label={translate('trips.post.origin')}
                 placeholder={translate('trips.post.origin_placeholder')}
                 value={field.state.value}
@@ -160,7 +132,7 @@ export function PostTripScreen() {
             name="destGov"
             children={field => (
               <Select
-                testID="post-dest"
+                testID="request-dest"
                 label={translate('trips.post.destination')}
                 placeholder={translate('trips.post.destination_placeholder')}
                 value={field.state.value}
@@ -172,12 +144,12 @@ export function PostTripScreen() {
           />
 
           <form.Field
-            name="departAt"
+            name="desiredAt"
             children={field => (
               <DateTimeField
-                testID="post-depart"
-                label={translate('trips.post.depart_at')}
-                placeholder={translate('trips.post.depart_placeholder')}
+                testID="request-desired"
+                label={translate('trips.request.desired_at')}
+                placeholder={translate('trips.request.desired_placeholder')}
                 mode="datetime"
                 minimumDate={new Date()}
                 value={field.state.value}
@@ -188,10 +160,25 @@ export function PostTripScreen() {
           />
 
           <form.Field
+            name="seats"
+            children={field => (
+              <Input
+                testID="request-seats"
+                label={translate('trips.request.seats')}
+                keyboardType="number-pad"
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChangeText={field.handleChange}
+                error={getFieldError(field)}
+              />
+            )}
+          />
+
+          <form.Field
             name="originArea"
             children={field => (
               <Input
-                testID="post-origin-area"
+                testID="request-origin-area"
                 label={translate('trips.post.origin_area')}
                 placeholder={translate('trips.post.origin_area_placeholder')}
                 value={field.state.value}
@@ -206,7 +193,7 @@ export function PostTripScreen() {
             name="destArea"
             children={field => (
               <Input
-                testID="post-dest-area"
+                testID="request-dest-area"
                 label={translate('trips.post.dest_area')}
                 placeholder={translate('trips.post.dest_area_placeholder')}
                 value={field.state.value}
@@ -218,71 +205,10 @@ export function PostTripScreen() {
           />
 
           <form.Field
-            name="stops"
-            children={field => (
-              <Input
-                testID="post-stops"
-                label={translate('trips.post.stops')}
-                placeholder={translate('trips.post.stops_placeholder')}
-                value={field.state.value}
-                onBlur={field.handleBlur}
-                onChangeText={field.handleChange}
-                error={getFieldError(field)}
-              />
-            )}
-          />
-
-          <form.Field
-            name="seatsTotal"
-            children={field => (
-              <Input
-                testID="post-seats"
-                label={translate('trips.post.seats_total')}
-                placeholder={translate('trips.post.seats_placeholder')}
-                keyboardType="number-pad"
-                value={field.state.value}
-                onBlur={field.handleBlur}
-                onChangeText={field.handleChange}
-                error={getFieldError(field)}
-              />
-            )}
-          />
-
-          <form.Field
-            name="pricePerSeat"
-            children={field => (
-              <Input
-                testID="post-price"
-                label={translate('trips.post.price_per_seat')}
-                placeholder={translate('trips.post.price_placeholder')}
-                keyboardType="numeric"
-                value={field.state.value}
-                onBlur={field.handleBlur}
-                onChangeText={field.handleChange}
-                error={getFieldError(field)}
-              />
-            )}
-          />
-
-          <form.Field
-            name="bookingMode"
-            children={field => (
-              <Select
-                testID="post-booking-mode"
-                label={translate('trips.post.booking_mode')}
-                value={field.state.value}
-                options={bookingOptions}
-                onSelect={v => field.handleChange(v as 'instant' | 'approve')}
-                error={getFieldError(field)}
-              />
-            )}
-          />
-
-          <form.Field
             name="note"
             children={field => (
               <Input
-                testID="post-note"
+                testID="request-note"
                 label={translate('trips.post.note')}
                 placeholder={translate('trips.post.note_placeholder')}
                 multiline
@@ -298,13 +224,34 @@ export function PostTripScreen() {
             selector={state => [state.isSubmitting]}
             children={([isSubmitting]) => (
               <Button
-                testID="post-submit"
-                label={translate('trips.post.submit')}
+                testID="request-submit"
+                label={translate('trips.request.submit')}
                 onPress={form.handleSubmit}
                 loading={isSubmitting}
               />
             )}
           />
+
+          {matches !== null
+            ? (
+                <View className="mt-6 gap-2">
+                  <Text
+                    className="text-xl font-bold"
+                    tx="trips.request.matches_title"
+                  />
+                  {matches.length > 0
+                    ? (
+                        matches.map(m => <TripCard key={m._id} {...m} />)
+                      )
+                    : (
+                        <Text
+                          className="text-gray-500"
+                          tx="trips.request.no_matches"
+                        />
+                      )}
+                </View>
+              )
+            : null}
         </View>
       </ScrollView>
     </KeyboardAvoidingView>

@@ -74,19 +74,21 @@ Derived from `PRD.md`. Milestones are shippable vertical slices; tasks are the c
 
 ---
 
-## M4 — Requests, matching & notifications
+## M4 — Requests, matching & notifications ✅
 **Goal:** the novel cross-matching layer.
 
-- [ ] `createRideRequest` mutation: validate, `status=open`, return inline matches.
-- [ ] Matching helper: query opposite-type open records on `by_route_status` within `MATCH_WINDOW_MS` (+ seats check vs trips).
-- [ ] On insert (trip or request), schedule push to the pre-existing party in both directions; creator sees matches inline.
-- [ ] Push-sending Convex action → Expo push API (match + booking-status payloads).
-- [ ] Request-a-ride form + result screen showing inline matched trips.
-- [ ] `acceptRequest` mutation: create trip (`seatsTotal=request.seats`, driver-entered price/time) + `confirmed` booking linked to request; request → `matched`.
-- [ ] Driver "open requests on my route" view + Accept flow (enter price, confirm time).
-- [ ] In-app Notifications screen (match + booking events).
+- [x] `createRideRequest` mutation: validate, `status=open`, return inline matches. → `convex/requests.ts`
+- [x] Matching helper: query opposite-type open records on `by_route_status` within `MATCH_WINDOW_MS` (+ seats check vs trips). → pure `convex/lib/matching.ts` (`tripMatchesRequest`, ±90 min + seats), unit-tested
+- [x] On insert (trip or request), schedule push to the pre-existing party in both directions; creator sees matches inline. → `createRideRequest` (match_passenger) + `createTrip` edit (match_driver)
+- [x] Push-sending Convex action → Expo push API (match + booking-status payloads). → `convex/notifications.ts` `sendPush` internalAction; booking pushes wired into `convex/bookings.ts`
+- [x] Request-a-ride form + result screen showing inline matched trips. → `src/features/requests/request-form-screen.tsx` (+ `/request-ride` route, link on Find)
+- [x] `acceptRequest` mutation: create trip (`seatsTotal=request.seats`, driver-entered price/time) + `confirmed` booking linked to request; request → `matched`. → `convex/requests.ts`
+- [x] Driver "open requests on my route" view + Accept flow (enter price, confirm time). → `browse-requests-screen.tsx` (`/open-requests`, link on Post) + `request-detail-screen.tsx` (`/request/[id]`)
+- [x] In-app Notifications screen (match + booking events). → `convex/notifications.ts` `myNotifications`/`markAllRead` + `src/features/notifications/notifications-screen.tsx` (Notifications tab)
 
 **Exit:** posting a request notifies matching drivers and vice versa (each pair once); a driver accepts a request and it becomes a confirmed booking.
+
+> **Status:** Implemented & verified — `type-check` (0), `lint` (0 errors), `lint:translations` (clean), **51/51 tests pass** (7 suites, incl. new `matching.test.ts`). Matching is a pure, unit-tested helper (`tripMatchesRequest`: ±90 min window + seat check); each (trip,request) pair is evaluated once at the second insert (no stored match table). Push text is Arabic-only in the backend; the in-app **Notifications** tab renders localized text client-side from the notification `type`. Instant bookings notify the driver via the live Activity tab (no push) per PRD scope. New `notifications` table + `by_user` index added to the schema. Concurrent accept of the same request is resolved by Convex per-document OCC (re-reads `status` at accept). **Runtime pending:** run `npx convex dev` to deploy `convex/{requests,notifications}.ts` + the new table to the `tawseel` deployment; on-device push delivery needs a physical device + dev build (`npx convex codegen` already updated local types).
 
 ---
 

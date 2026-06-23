@@ -23,6 +23,9 @@ type PassengerBooking = FunctionReturnType<
   typeof api.bookings.myBookingsAsPassenger
 >[number];
 type BookingStatus = PassengerBooking['status'];
+type MyRequest = FunctionReturnType<
+  typeof api.requests.myRideRequests
+>[number];
 
 function formatDepart(ms: number): string {
   const locale = i18n.language || 'en';
@@ -40,8 +43,13 @@ function formatDepart(ms: number): string {
 export function ActivityScreen() {
   const driverTrips = useQuery(api.bookings.myTripsWithBookings);
   const myBookings = useQuery(api.bookings.myBookingsAsPassenger);
+  const myRequests = useQuery(api.requests.myRideRequests);
 
-  if (driverTrips === undefined || myBookings === undefined) {
+  if (
+    driverTrips === undefined
+    || myBookings === undefined
+    || myRequests === undefined
+  ) {
     return (
       <>
         <FocusAwareStatusBar />
@@ -87,6 +95,23 @@ export function ActivityScreen() {
               : (
                   myBookings.map(booking => (
                     <PassengerBookingCard key={booking._id} booking={booking} />
+                  ))
+                )}
+          </View>
+
+          <View className="gap-3 border-t border-neutral-200 pt-4 dark:border-neutral-700">
+            <Text className="text-xl font-bold">
+              {translate('trips.myRequests.title')}
+            </Text>
+            {myRequests.length === 0
+              ? (
+                  <Text className="text-gray-500">
+                    {translate('trips.myRequests.empty')}
+                  </Text>
+                )
+              : (
+                  myRequests.map(request => (
+                    <MyRequestRow key={request._id} request={request} />
                   ))
                 )}
           </View>
@@ -255,6 +280,41 @@ function PassengerBookingCard({ booking }: { booking: PassengerBooking }) {
               label={translate('trips.activity.cancel')}
               onPress={() =>
                 runMutation(() => cancelBooking({ bookingId: booking._id }))}
+            />
+          )
+        : null}
+    </View>
+  );
+}
+
+function MyRequestRow({ request }: { request: MyRequest }) {
+  const cancelRideRequest = useMutation(api.requests.cancelRideRequest);
+
+  return (
+    <View className="gap-2 rounded-xl border border-neutral-300 p-4 dark:border-neutral-700">
+      <View className="flex-row items-center justify-between">
+        <Text className="text-lg font-semibold">
+          {`${getGovernorateLabel(request.originGov)} → ${getGovernorateLabel(request.destGov)}`}
+        </Text>
+        <View className="self-start rounded-full bg-neutral-200 px-2 py-0.5 dark:bg-neutral-700">
+          <Text className="text-xs">
+            {translate(`trips.request_status.${request.status}`)}
+          </Text>
+        </View>
+      </View>
+      <Text className="text-gray-600 dark:text-neutral-400">
+        {formatDepart(request.desiredAt)}
+      </Text>
+      <Text className="text-gray-600 dark:text-neutral-400">
+        {translate('trips.activity.seats_booked', { seats: request.seats })}
+      </Text>
+      {request.status === 'open'
+        ? (
+            <Button
+              variant="outline"
+              label={translate('trips.activity.cancel')}
+              onPress={() =>
+                runMutation(() => cancelRideRequest({ requestId: request._id }))}
             />
           )
         : null}

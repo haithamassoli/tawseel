@@ -75,6 +75,14 @@
     "website": "Website"
   },
   "trips": {
+    "accept": {
+      "confirm": "Accept & create trip",
+      "depart": "Confirm departure time",
+      "error": "Could not accept the request. Please try again.",
+      "passenger": "Passenger",
+      "success": "Request accepted. The passenger is confirmed.",
+      "title": "Accept request"
+    },
     "activity": {
       "approve": "Approve",
       "as_driver": "My trips",
@@ -148,6 +156,25 @@
       "select_route": "Choose a starting point and destination to see available rides.",
       "title": "Find a ride"
     },
+    "myRequests": {
+      "empty": "You haven't posted any requests yet.",
+      "title": "My requests"
+    },
+    "notifications": {
+      "empty": "No notifications yet.",
+      "title": "Notifications",
+      "type_booking_confirmed": "Your booking is confirmed",
+      "type_booking_pending": "New booking request",
+      "type_booking_rejected": "Your booking was declined",
+      "type_match_driver": "Potential driver for your trip",
+      "type_match_passenger": "Potential passenger on your route"
+    },
+    "openRequests": {
+      "empty": "No open requests on this route.",
+      "link": "Browse ride requests",
+      "select_route": "Choose a route to see ride requests.",
+      "title": "Ride requests"
+    },
     "post": {
       "booking_mode": "Booking mode",
       "depart_at": "Departure time",
@@ -173,6 +200,25 @@
       "success": "Trip published successfully",
       "title": "Post a trip"
     },
+    "request": {
+      "desired_at": "Preferred time",
+      "desired_placeholder": "Pick date and time",
+      "link": "Need a ride? Request one",
+      "matches_title": "Matching trips",
+      "no_matches": "No matching trips yet. We'll notify you when a driver appears.",
+      "seats": "Seats needed",
+      "submit": "Find matches",
+      "submit_error": "Could not post your request. Please try again.",
+      "subtitle": "Tell drivers where you want to go.",
+      "success": "Request posted.",
+      "title": "Request a ride"
+    },
+    "request_status": {
+      "cancelled": "Cancelled",
+      "completed": "Completed",
+      "matched": "Matched",
+      "open": "Open"
+    },
     "status": {
       "cancelled": "Cancelled",
       "completed": "Completed",
@@ -182,6 +228,7 @@
     "tabs": {
       "activity": "Activity",
       "find": "Find",
+      "notifications": "Notifications",
       "post": "Post"
     },
     "validation": {
