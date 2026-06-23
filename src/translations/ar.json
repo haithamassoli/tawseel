@@ -88,12 +88,15 @@
       "as_driver": "رحلاتي",
       "as_passenger": "حجوزاتي",
       "cancel": "إلغاء",
+      "complete": "إنهاء الرحلة",
       "empty_driver": "لم تنشر أي رحلة بعد.",
       "empty_passenger": "لم تحجز أي رحلة بعد.",
       "no_bookings": "لا توجد حجوزات بعد",
       "passengers": "الركاب",
       "phone": "الهاتف",
       "phone_hidden": "يظهر بعد التأكيد",
+      "rate_driver": "قيّم السائق",
+      "rate_passenger": "قيّم الراكب",
       "reject": "رفض",
       "seats_booked": "{{seats}} مقعد",
       "title": "نشاطي"
@@ -167,7 +170,9 @@
       "type_booking_pending": "طلب حجز جديد",
       "type_booking_rejected": "تم رفض حجزك",
       "type_match_driver": "سائق محتمل لرحلتك",
-      "type_match_passenger": "راكب محتمل على مسارك"
+      "type_match_passenger": "راكب محتمل على مسارك",
+      "type_new_rating": "حصلت على تقييم جديد",
+      "type_trip_completed": "اكتملت رحلتك — قيّم سائقك"
     },
     "openRequests": {
       "empty": "لا توجد طلبات مفتوحة على هذا المسار.",
@@ -199,6 +204,18 @@
       "submit_error": "تعذّر نشر رحلتك. حاول مرة أخرى.",
       "success": "تم نشر الرحلة بنجاح",
       "title": "أضف رحلة"
+    },
+    "rate": {
+      "already_rated": "لقد قيّمت هذه الرحلة بالفعل.",
+      "comment": "تعليق (اختياري)",
+      "comment_placeholder": "شارك تفاصيل تجربتك",
+      "error": "تعذّر إرسال تقييمك. حاول مرة أخرى.",
+      "not_available": "لا يمكن تقييم هذه الرحلة بعد.",
+      "rating_for": "أنت تقيّم {{name}}",
+      "stars": "تقييمك",
+      "submit": "إرسال التقييم",
+      "success": "شكراً لتقييمك.",
+      "title": "تقييم"
     },
     "request": {
       "desired_at": "الوقت المفضل",

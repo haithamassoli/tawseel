@@ -92,17 +92,19 @@ Derived from `PRD.md`. Milestones are shippable vertical slices; tasks are the c
 
 ---
 
-## M5 — Completion & ratings
+## M5 — Completion & ratings ✅
 **Goal:** trips close and reputation accrues.
 
-- [ ] `completeTrip` mutation: trip → `completed`, its confirmed bookings → `completed`.
-- [ ] `rateBooking` mutation: 1–5 + optional comment; enforce one-per-rater-per-booking via `by_booking`; update ratee `ratingAvg`/`ratingCount`.
-- [ ] "Mark completed" action in driver activity.
-- [ ] Rate screen post-completion for both parties.
-- [ ] Show rating avg + count on profile and trip detail/cards.
-- [ ] In-app surfacing (badges) for completion + new-rating events.
+- [x] `completeTrip` mutation: trip → `completed`, its confirmed bookings → `completed`. → `convex/trips.ts` (driver-only, active-only guard; notifies each confirmed passenger via `trip_completed`)
+- [x] `rateBooking` mutation: 1–5 + optional comment; enforce one-per-rater-per-booking via `by_booking`; update ratee `ratingAvg`/`ratingCount`. → `convex/ratings.ts` + pure `convex/lib/ratings.ts` (`addRating`, incremental mean, unit-tested)
+- [x] "Mark completed" action in driver activity. → `src/features/trips/activity-screen.tsx` (`DriverTripCard`)
+- [x] Rate screen post-completion for both parties. → `src/features/ratings/rate-screen.tsx` (+ `/rate/[id]` route) + `convex/ratings.ts` `getRateContext`; Rate buttons on completed bookings in both Activity views
+- [x] Show rating avg + count on profile and trip detail/cards. → already implemented in M2 (`profile-screen.tsx`, `trip-card.tsx`, `trip-detail-screen.tsx`) via `profile.rating_value`; verified still rendering, no change
+- [x] In-app surfacing (badges) for completion + new-rating events. → two new notification types (`trip_completed`, `new_rating`) flow through the existing Notifications tab (unread dot + localized `type_*` labels)
 
 **Exit:** a full trip completes and both parties rate each other; averages update on their profiles.
+
+> **Status:** Implemented & verified — `type-check` (0), `lint` (0 errors), `lint:translations` (clean, 213 keys ×2 identical), **55/55 tests pass** (8 suites, incl. new `rating-math.test.ts`). The rating-average recompute is a pure, unit-tested helper (`addRating`: incremental mean, throws on out-of-range/non-integer). `rateBooking` is the trust boundary — re-verifies party membership, completed status, 1–5 integer, and one-per-rater (via `by_booking`) before writing; concurrent ratings of the same ratee resolve by Convex per-document OCC. `getRateContext` is an advisory read (never exposes phone). Completion notifies confirmed passengers; rating notifies the ratee; both surface as unread badges on the Notifications tab. Rating display on profile/detail/cards was already shipped in M2. **Runtime pending:** run `npx convex dev` to deploy `convex/{ratings,trips,notifications,schema}.ts` (new `ratings` functions + 2 notification literals) to the `tawseel` deployment; on-device push delivery needs a physical device + dev build (`npx convex codegen` already updated local types).
 
 ---
 

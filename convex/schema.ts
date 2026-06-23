@@ -134,6 +134,8 @@ export default defineSchema({
       v.literal('booking_pending'),
       v.literal('booking_confirmed'),
       v.literal('booking_rejected'),
+      v.literal('trip_completed'),
+      v.literal('new_rating'),
     ),
     tripId: v.optional(v.id('trips')),
     requestId: v.optional(v.id('rideRequests')),

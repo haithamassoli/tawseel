@@ -9,7 +9,9 @@ export type NotifType
     | 'match_driver'
     | 'booking_pending'
     | 'booking_confirmed'
-    | 'booking_rejected';
+    | 'booking_rejected'
+    | 'trip_completed'
+    | 'new_rating';
 
 // Push text is Arabic (app is Arabic-first). The in-app Notifications screen
 // renders its OWN localized text from `type` via i18n — this map is ONLY for the
@@ -21,6 +23,8 @@ const PUSH_TEXT: Record<NotifType, { title: string; body: string }> = {
   booking_pending: { title: 'طلب حجز جديد', body: 'لديك طلب حجز جديد بانتظار الموافقة' },
   booking_confirmed: { title: 'تم تأكيد الحجز', body: 'تم تأكيد حجزك. رقم الهاتف ظاهر الآن.' },
   booking_rejected: { title: 'تم رفض الحجز', body: 'عذراً، تم رفض طلب حجزك' },
+  trip_completed: { title: 'اكتملت الرحلة', body: 'اكتملت رحلتك. قيّم سائقك من نشاطي.' },
+  new_rating: { title: 'تقييم جديد', body: 'لقد حصلت على تقييم جديد' },
 };
 
 export type PushMessage = {

@@ -1,5 +1,6 @@
 import type { FunctionReturnType } from 'convex/server';
 import { useMutation, useQuery } from 'convex/react';
+import { useRouter } from 'expo-router';
 import i18n from 'i18next';
 import * as React from 'react';
 
@@ -133,9 +134,13 @@ function StatusBadge({ status }: { status: BookingStatus }) {
 
 function DriverTripCard({ item }: { item: DriverTrip }) {
   const { trip, bookings } = item;
+  const router = useRouter();
   const approveBooking = useMutation(api.bookings.approveBooking);
   const rejectBooking = useMutation(api.bookings.rejectBooking);
   const cancelBooking = useMutation(api.bookings.cancelBooking);
+  const completeTrip = useMutation(api.trips.completeTrip);
+
+  const isActive = trip.status === 'open' || trip.status === 'full';
 
   return (
     <View className="gap-2 rounded-xl border border-neutral-300 p-4 dark:border-neutral-700">
@@ -161,6 +166,16 @@ function DriverTripCard({ item }: { item: DriverTrip }) {
         </View>
       </View>
 
+      {isActive
+        ? (
+            <Button
+              variant="outline"
+              label={translate('trips.activity.complete')}
+              onPress={() => runMutation(() => completeTrip({ tripId: trip._id }))}
+            />
+          )
+        : null}
+
       <Text className="mt-1 font-semibold">
         {translate('trips.activity.passengers')}
       </Text>
@@ -178,6 +193,7 @@ function DriverTripCard({ item }: { item: DriverTrip }) {
                 onApprove={() => approveBooking({ bookingId: b._id })}
                 onReject={() => rejectBooking({ bookingId: b._id })}
                 onCancel={() => cancelBooking({ bookingId: b._id })}
+                onRate={() => router.push(`/rate/${b._id}`)}
               />
             ))
           )}
@@ -190,11 +206,13 @@ function BookingRow({
   onApprove,
   onReject,
   onCancel,
+  onRate,
 }: {
   booking: DriverTrip['bookings'][number];
   onApprove: () => Promise<null>;
   onReject: () => Promise<null>;
   onCancel: () => Promise<null>;
+  onRate: () => void;
 }) {
   return (
     <View className="gap-2 border-t border-neutral-200 pt-2 dark:border-neutral-700">
@@ -236,11 +254,20 @@ function BookingRow({
             </>
           )
         : null}
+      {booking.status === 'completed'
+        ? (
+            <Button
+              label={translate('trips.activity.rate_passenger')}
+              onPress={onRate}
+            />
+          )
+        : null}
     </View>
   );
 }
 
 function PassengerBookingCard({ booking }: { booking: PassengerBooking }) {
+  const router = useRouter();
   const cancelBooking = useMutation(api.bookings.cancelBooking);
   const trip = booking.trip;
 
@@ -280,6 +307,14 @@ function PassengerBookingCard({ booking }: { booking: PassengerBooking }) {
               label={translate('trips.activity.cancel')}
               onPress={() =>
                 runMutation(() => cancelBooking({ bookingId: booking._id }))}
+            />
+          )
+        : null}
+      {booking.status === 'completed'
+        ? (
+            <Button
+              label={translate('trips.activity.rate_driver')}
+              onPress={() => router.push(`/rate/${booking._id}`)}
             />
           )
         : null}

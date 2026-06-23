@@ -1,5 +1,5 @@
 {
-  "name": "mobile-marketplace",
+  "name": "tawseel",
   "version": "1.0.0",
   "private": true,
   "main": "expo-router/entry",
@@ -37,7 +37,7 @@
     "test:ci": "npm run test -- --coverage",
     "test:watch": "npm run test -- --watch",
     "install-maestro": "curl -Ls 'https://get.maestro.mobile.dev' | bash",
-    "e2e-test": "maestro test .maestro/ -e APP_ID=com.mobile-marketplace.development"
+    "e2e-test": "maestro test .maestro/ -e APP_ID=com.haithamassoli-tawseel.development"
   },
   "dependencies": {
     "@auth/core": "^0.37.0",

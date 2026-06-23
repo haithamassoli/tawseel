@@ -88,12 +88,15 @@
       "as_driver": "My trips",
       "as_passenger": "My bookings",
       "cancel": "Cancel",
+      "complete": "Mark completed",
       "empty_driver": "You haven't posted any trips yet.",
       "empty_passenger": "You haven't booked any rides yet.",
       "no_bookings": "No bookings yet",
       "passengers": "Passengers",
       "phone": "Phone",
       "phone_hidden": "Shown once confirmed",
+      "rate_driver": "Rate driver",
+      "rate_passenger": "Rate passenger",
       "reject": "Reject",
       "seats_booked": "{{seats}} seat(s)",
       "title": "My activity"
@@ -167,7 +170,9 @@
       "type_booking_pending": "New booking request",
       "type_booking_rejected": "Your booking was declined",
       "type_match_driver": "Potential driver for your trip",
-      "type_match_passenger": "Potential passenger on your route"
+      "type_match_passenger": "Potential passenger on your route",
+      "type_new_rating": "You received a new rating",
+      "type_trip_completed": "Trip completed — rate your driver"
     },
     "openRequests": {
       "empty": "No open requests on this route.",
@@ -199,6 +204,18 @@
       "submit_error": "Could not publish your trip. Please try again.",
       "success": "Trip published successfully",
       "title": "Post a trip"
+    },
+    "rate": {
+      "already_rated": "You've already rated this trip.",
+      "comment": "Comment (optional)",
+      "comment_placeholder": "Share details of your experience",
+      "error": "Could not submit your rating. Please try again.",
+      "not_available": "This trip can't be rated yet.",
+      "rating_for": "You're rating {{name}}",
+      "stars": "Your rating",
+      "submit": "Submit rating",
+      "success": "Thanks for your rating.",
+      "title": "Rate"
     },
     "request": {
       "desired_at": "Preferred time",

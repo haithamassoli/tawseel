@@ -247,3 +247,59 @@ export const getTrip = query({
     return { ...trip, driver };
   },
 });
+
+/**
+ * Driver marks their trip completed: trip -> 'completed', and every CONFIRMED
+ * booking on it -> 'completed'. Each affected passenger is notified (and pushed)
+ * so they can rate. ponytail: no depart-time gate — the driver decides when the
+ * trip happened; only active (open/full) trips can be completed.
+ */
+export const completeTrip = mutation({
+  args: { tripId: v.id('trips') },
+  handler: async (ctx, args): Promise<null> => {
+    const userId = await getAuthUserId(ctx);
+    if (userId === null) {
+      throw new Error('Not authenticated');
+    }
+    const trip = await ctx.db.get(args.tripId);
+    if (trip === null) {
+      throw new Error('Trip not found');
+    }
+    if (trip.driverId !== userId) {
+      throw new Error('Only the driver can complete this trip');
+    }
+    if (trip.status !== 'open' && trip.status !== 'full') {
+      throw new Error('Only an active trip can be completed');
+    }
+    await ctx.db.patch(trip._id, { status: 'completed' });
+
+    // Complete every confirmed booking + notify its passenger.
+    // ponytail: cap at 100 bookings/trip (matches myTripsWithBookings).
+    const bookings = await ctx.db
+      .query('bookings')
+      .withIndex('by_trip', q => q.eq('tripId', trip._id))
+      .take(100);
+    const messages: PushMessage[] = [];
+    for (const b of bookings) {
+      if (b.status !== 'confirmed') {
+        continue;
+      }
+      await ctx.db.patch(b._id, { status: 'completed' });
+      const m = await recordNotification(ctx, {
+        userId: b.passengerId,
+        type: 'trip_completed',
+        tripId: trip._id,
+        bookingId: b._id,
+      });
+      if (m) {
+        messages.push(m);
+      }
+    }
+    if (messages.length) {
+      await ctx.scheduler.runAfter(0, internal.notifications.sendPush, {
+        messages,
+      });
+    }
+    return null;
+  },
+});
