@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   FocusAwareStatusBar,
   ScrollView,
+  showErrorMessage,
   Text,
   View,
 } from '@/components/ui';
@@ -21,8 +22,13 @@ export function ProfileScreen() {
   const user = useQuery(api.users.getCurrentUser);
 
   const onLogout = React.useCallback(async () => {
-    await signOut();
-    router.replace('/login');
+    try {
+      await signOut();
+      router.replace('/login');
+    }
+    catch {
+      showErrorMessage(translate('auth.logout_error'));
+    }
   }, [signOut, router]);
 
   if (user === undefined) {

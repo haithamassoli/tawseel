@@ -17,6 +17,9 @@ describe('seat accounting', () => {
   it('releasing seats reopens a full trip', () => {
     expect(releaseSeats(0, 1, 4)).toEqual({ seatsAvailable: 1, status: 'open' });
   });
+  it('releasing on a still-open trip increments and stays open', () => {
+    expect(releaseSeats(1, 1, 4)).toEqual({ seatsAvailable: 2, status: 'open' });
+  });
   it('releasing never exceeds seatsTotal', () => {
     expect(releaseSeats(3, 5, 4)).toEqual({ seatsAvailable: 4, status: 'open' });
   });

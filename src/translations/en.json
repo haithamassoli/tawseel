@@ -1,6 +1,7 @@
 {
   "auth": {
     "have_account": "Already have an account?",
+    "logout_error": "Could not log out. Please try again.",
     "name": "Name",
     "name_min": "Name must be at least 2 characters",
     "name_required": "Name is required",

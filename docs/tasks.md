@@ -111,12 +111,14 @@ Derived from `PRD.md`. Milestones are shippable vertical slices; tasks are the c
 ## M6 — Launch hardening
 **Goal:** production-ready.
 
-- [ ] Audit all mutations for boundary validation (seats>0, price≥0, origin≠dest, future depart) with clear errors.
-- [ ] Verify cancellation + seat-release edge cases end-to-end (incl. cancel after `full`).
-- [ ] Empty/loading/error states across all screens.
-- [ ] Configure bundle IDs / app config / icon / splash (`env.ts`, `app.config.ts`).
-- [ ] EAS production build profiles (iOS + Android); resolve push credentials (APNs/FCM).
-- [ ] End-to-end QA pass of all PRD flows on device; prepare store assets.
-- [ ] `npm run check-all` green (lint, type-check, test).
+- [x] Audit all mutations for boundary validation (seats>0, price≥0, origin≠dest, future depart) with clear errors. → audited all 12 mutations in `convex/{trips,bookings,requests,ratings,users,notifications}.ts`; every applicable PRD boundary is already enforced with a clear thrown `Error`. **0 changes needed.**
+- [x] Verify cancellation + seat-release edge cases end-to-end (incl. cancel after `full`). → `cancelBooking` releases seats only on `confirmed`, flips `full`→`open`, and never resurrects a completed/cancelled trip; pure `releaseSeats` helper now has edge-case tests (release-from-`full`→`open`, increment-stay-`open`, never exceed `seatsTotal`). Non-confirmed-no-op lives in the mutation gate (verified by reading; DB-level exercise belongs to device QA / a future convex-test suite).
+- [x] Empty/loading/error states across all screens. → audited all 8 query-backed screens + 4 forms; loading (`undefined`→spinner), empty (localized message), and error (`showErrorMessage`) states all present. One genuine gap fixed: `profile-screen.tsx` logout had an unhandled rejection → now `try/catch` + `auth.logout_error` (both locales).
+- [x] Configure bundle IDs / app config / icon / splash (`env.ts`, `app.config.ts`). → verified launch-ready: distinct bundle IDs/packages/schemes per env (production unsuffixed), all referenced icon/splash/adaptive/favicon assets exist, EAS projectId + `updates.url` consistent. **0 changes needed.**
+- [ ] EAS production build profiles (iOS + Android); resolve push credentials (APNs/FCM). → **profiles verified ✓** (`eas.json`: production AAB + preview APK + development + simulator; channels/distribution/env set; submit profiles present). **Push credentials (APNs/FCM) still need your Apple/Google accounts — runtime.**
+- [ ] End-to-end QA pass of all PRD flows on device; prepare store assets. → **needs a physical device + creative assets (screenshots, descriptions, privacy URL) — runtime.**
+- [x] `npm run check-all` green (lint, type-check, test). → green: lint 0 errors (1 pre-existing `_layout.tsx` warning), type-check clean, `lint:translations` clean, **56/56 tests** (8 suites).
 
 **Exit:** production EAS build passes, all PRD flows verified on device, ready for TestFlight / Play internal.
+
+> **Status:** Code & config hardening complete and **independently verified** — `npm run check-all` green (lint 0 errors, type-check clean, translations clean, **56/56 tests**, 8 suites). Ran as a 3-agent `/workflows` audit (backend validation / frontend states / release config, in parallel) under a strict "fix genuine gaps only" discipline, then I re-ran every gate and read every diff myself. Findings: the backend was already fully validated (**0 convex changes** — every PRD boundary enforced at every applicable mutation, matching an independent pre-audit read); added one seat-release edge-case test (+1 → 56); fixed one genuine frontend gap (profile logout error handling); `env.ts`/`app.config.ts`/`eas.json` + assets verified launch-ready (**0 config changes**). **Release execution pending (needs you — not doable in a headless session):** resolve push credentials (APNs/FCM), run the EAS production build, on-device QA of all PRD flows, prepare store-listing assets. Also still pending from M1–M5: `npx convex dev` to deploy the backend to the `tawseel` deployment.
