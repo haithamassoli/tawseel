@@ -31,8 +31,8 @@ const BUNDLE_IDS = {
 } as const;
 
 const PACKAGES = {
-  development: 'com.haithamassoli-tawseel.development',
-  preview: 'com.haithamassoli-tawseel.preview',
+  development: 'com.haithamassoli_tawseel.development',
+  preview: 'com.haithamassoli_tawseel.preview',
   production: 'com.haithamassoli.tawseel',
 } as const;
 
